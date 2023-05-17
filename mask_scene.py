@@ -5,9 +5,9 @@ import numpy as np
 from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip
 
-annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/bbox/annotations")
-dataset_path = Path("/nas.dbms/randy/datasets/ucf101")
-output_path = Path("/nas.dbms/randy/datasets/ucf101-mask")
+annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
+input_path = Path("/nas.dbms/randy/datasets/ucf101")
+output_path = Path("/nas.dbms/randy/datasets/ucf101-mask-scene")
 n_xml = sum(
     1 for f in annotation_path.glob("**/*") if f.is_file() and f.name.endswith(".xgtf")
 )
@@ -96,7 +96,7 @@ for action in annotation_path.iterdir():
                 people_bbox.update({person_id: person_bbox})
 
         input_video_path = (
-            dataset_path / action.name / (anno_file.with_suffix(".avi").name)
+            input_path / action.name / (anno_file.with_suffix(".avi").name)
         )
         output_video_path = (
             output_path / action.name / (anno_file.with_suffix(".mp4").name)
@@ -117,7 +117,7 @@ for action in annotation_path.iterdir():
             if not ret:
                 break
 
-            mask = np.zeros(frame.shape[:2], dtype=frame.dtype)
+            mask = np.ones(frame.shape[:2], dtype=frame.dtype)
 
             for person_id, person_bbox in people_bbox.items():
                 if frame_idx not in person_bbox:
@@ -127,7 +127,7 @@ for action in annotation_path.iterdir():
                 x1, y1, w, h = [int(i) for i in bbox]
                 x2 = x1 + w
                 y2 = y1 + h
-                mask[y1:y2, x1:x2] = 1
+                mask[y1:y2, x1:x2] = 0
 
             frame = cv2.bitwise_and(frame, frame, mask=mask)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
