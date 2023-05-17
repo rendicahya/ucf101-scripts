@@ -33,8 +33,6 @@ for action in annotation_path.iterdir():
         if not anno_file.suffix == ".xgtf":
             continue
 
-        print(anno_file.name)
-
         with open(anno_file) as f:
             try:
                 soup = BeautifulSoup(f, features="xml")
