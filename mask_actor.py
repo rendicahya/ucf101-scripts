@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip
 
 annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/bbox/annotations")
-dataset_path = Path("/nas.dbms/randy/datasets/ucf101")
+input_path = Path("/nas.dbms/randy/datasets/ucf101")
 output_path = Path("/nas.dbms/randy/datasets/ucf101-mask")
 n_xml = sum(
     1 for f in annotation_path.glob("**/*") if f.is_file() and f.name.endswith(".xgtf")
@@ -96,7 +96,7 @@ for action in annotation_path.iterdir():
                 people_bbox.update({person_id: person_bbox})
 
         input_video_path = (
-            dataset_path / action.name / (anno_file.with_suffix(".avi").name)
+            input_path / action.name / (anno_file.with_suffix(".avi").name)
         )
         output_video_path = (
             output_path / action.name / (anno_file.with_suffix(".mp4").name)

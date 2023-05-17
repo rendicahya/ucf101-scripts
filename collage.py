@@ -3,8 +3,8 @@ from pathlib import Path
 import numpy as np
 from moviepy.editor import VideoFileClip, clips_array, concatenate_videoclips
 
-input_path = Path("/nas.dbms/randy/datasets/ucf101-mask")
-output_path = Path("/nas.dbms/randy/datasets/ucf101-mask-collage")
+input_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene")
+output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene-collage")
 
 output_path.mkdir(parents=True, exist_ok=True)
 

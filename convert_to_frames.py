@@ -3,12 +3,12 @@ from pathlib import Path
 import cv2
 from tqdm import tqdm
 
-dataset_path = Path("/nas.dbms/randy/datasets/ucf101-split")
+input_path = Path("/nas.dbms/randy/datasets/ucf101-split")
 output_path = Path("/nas.dbms/randy/datasets/ucf101-frames")
-n_videos = sum(1 for f in dataset_path.glob("**/*") if f.is_file())
+n_videos = sum(1 for f in input_path.glob("**/*") if f.is_file())
 
 with tqdm(total=n_videos) as bar:
-    for split in dataset_path.iterdir():
+    for split in input_path.iterdir():
         for action in split.iterdir():
             for video in action.iterdir():
                 bar.set_description(video.name)
