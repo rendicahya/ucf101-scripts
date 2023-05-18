@@ -1,9 +1,10 @@
 import random
 from pathlib import Path
+
+import numpy as np
 import skimage
 from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip, VideoFileClip
-import numpy as np
 
 anno_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
@@ -134,13 +135,16 @@ for action in anno_path.iterdir():
                 )
 
             for person_id, person_bbox in scene_bbox.items():
-                if i not in person_bbox:
+                i_mod = i % n_scene_frames
+
+                if i_mod not in person_bbox:
                     continue
 
-                bbox = person_bbox[i]
+                bbox = person_bbox[i_mod]
                 x1, y1, w, h = [int(i) for i in bbox]
                 x2 = x1 + w
                 y2 = y1 + h
+
                 mean_color = np.mean(canvas[y1:y2, x1:x2], axis=(0, 1))
                 canvas[y1:y2, x1:x2] = mean_color
 
@@ -166,5 +170,5 @@ for action in anno_path.iterdir():
             clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
             clip.write_videofile(str(output_video_path), audio=False)
 
-        break
+        # break
     break
