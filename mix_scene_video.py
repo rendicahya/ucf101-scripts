@@ -1,15 +1,13 @@
 import random
 from pathlib import Path
-
+import skimage
 from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip, VideoFileClip
+import numpy as np
 
 anno_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
 output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene-video")
-n_xml = sum(
-    1 for f in anno_path.glob("**/*") if f.is_file() and f.name.endswith(".xgtf")
-)
 
 with open("annotation-list.txt") as file:
     anno_list = [line.strip() for line in file]
@@ -104,18 +102,17 @@ for action in anno_path.iterdir():
             continue
 
         actor_video_path = (
-            video_path / action.name / (actor_anno.with_suffix(".avi").name)
+            video_path / action.name / actor_anno.with_suffix(".avi").name
         )
 
         actor_video = VideoFileClip(str(actor_video_path))
         actor_frames = actor_video.iter_frames()
-
         scene_anno = random.choice(anno_list)
         scene_anno_path = Path(scene_anno)
         scene_video_path = (
             video_path
             / scene_anno_path.parent.name
-            / (scene_anno_path.with_suffix(".avi").name)
+            / scene_anno_path.with_suffix(".avi").name
         )
         scene_video = VideoFileClip(str(scene_video_path))
         scene_frames = list(scene_video.iter_frames())
@@ -127,6 +124,15 @@ for action in anno_path.iterdir():
         for i, actor_frame in enumerate(actor_frames):
             canvas = scene_frames[i % n_scene_frames].copy()
 
+            if canvas.shape[0] != actor_video.h or canvas.shape[1] != actor_video.w:
+                canvas = skimage.transform.resize(
+                    canvas,
+                    (actor_video.h, actor_video.w),
+                    mode="reflect",
+                    preserve_range=True,
+                    anti_aliasing=True,
+                )
+
             for person_id, person_bbox in scene_bbox.items():
                 if i not in person_bbox:
                     continue
@@ -135,7 +141,8 @@ for action in anno_path.iterdir():
                 x1, y1, w, h = [int(i) for i in bbox]
                 x2 = x1 + w
                 y2 = y1 + h
-                canvas[y1:y2, x1:x2] = 0
+                mean_color = np.mean(canvas[y1:y2, x1:x2], axis=(0, 1))
+                canvas[y1:y2, x1:x2] = mean_color
 
             for person_id, person_bbox in actor_bbox.items():
                 if i not in person_bbox:
@@ -150,7 +157,7 @@ for action in anno_path.iterdir():
             output_frames.append(canvas)
 
         output_video_path = (
-            output_path / action.name / (actor_anno.with_suffix(".mp4").name)
+            output_path / action.name / actor_anno.with_suffix(".mp4").name
         )
 
         output_video_path.parent.mkdir(parents=True, exist_ok=True)
@@ -158,3 +165,6 @@ for action in anno_path.iterdir():
         if len(output_frames) > 0:
             clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
             clip.write_videofile(str(output_video_path), audio=False)
+
+        break
+    break
