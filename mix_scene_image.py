@@ -28,61 +28,44 @@ colors = (
     (255, 255, 255),
 )
 
-for action in annotation_path.iterdir():
-    for anno_file in action.iterdir():
-        if not anno_file.suffix == ".xgtf":
-            continue
 
-        with open(anno_file) as f:
-            try:
-                soup = BeautifulSoup(f, features="xml")
-            except:
+def parse_annotation(file):
+    with open(file) as f:
+        try:
+            soup = BeautifulSoup(f, features="xml")
+        except:
+            return None
+
+    data = soup.find("data")
+    people_bbox = {}
+
+    if data is None:
+        return None
+
+    for sourcefile in data.find_all("sourcefile"):
+        for person in sourcefile.find_all("object", {"name": "PERSON"}):
+            person_id = int(person["id"])
+
+            if person_id in people_bbox:
                 continue
 
-        data = soup.find("data")
-        people_bbox = {}
+            person_locations = person.find("attribute", {"name": "Location"})
+            person_bbox = {}
+            person_action = person.find("data:bvalue", {"value": "true"})
 
-        if data is None:
-            continue
+            if not person_action:
+                continue
 
-        for sourcefile in data.find_all("sourcefile"):
-            for person in sourcefile.find_all("object", {"name": "PERSON"}):
-                person_id = int(person["id"])
+            act_start, act_end = [int(i) for i in person_action["framespan"].split(":")]
 
-                if person_id in people_bbox:
-                    continue
+            for bbox in person_locations.find_all("data:bbox"):
+                start, end = [int(i) for i in bbox["framespan"].split(":")]
 
-                person_locations = person.find("attribute", {"name": "Location"})
-                person_bbox = {}
-                person_action = person.find("data:bvalue", {"value": "true"})
+                if action_only:
+                    if act_start <= start <= act_end or act_start <= end <= act_end:
+                        start = max(start, act_start)
+                        end = min(end, act_end)
 
-                if not person_action:
-                    continue
-
-                act_start, act_end = [
-                    int(i) for i in person_action["framespan"].split(":")
-                ]
-
-                for bbox in person_locations.find_all("data:bbox"):
-                    start, end = [int(i) for i in bbox["framespan"].split(":")]
-
-                    if action_only:
-                        if act_start <= start <= act_end or act_start <= end <= act_end:
-                            start = max(start, act_start)
-                            end = min(end, act_end)
-
-                            for frame in range(start - 1, end):
-                                bbox_data = {
-                                    frame: (
-                                        bbox["x"],
-                                        bbox["y"],
-                                        bbox["width"],
-                                        bbox["height"],
-                                    )
-                                }
-
-                                person_bbox.update(bbox_data)
-                    else:
                         for frame in range(start - 1, end):
                             bbox_data = {
                                 frame: (
@@ -94,8 +77,33 @@ for action in annotation_path.iterdir():
                             }
 
                             person_bbox.update(bbox_data)
+                else:
+                    for frame in range(start - 1, end):
+                        bbox_data = {
+                            frame: (
+                                bbox["x"],
+                                bbox["y"],
+                                bbox["width"],
+                                bbox["height"],
+                            )
+                        }
 
-                people_bbox.update({person_id: person_bbox})
+                        person_bbox.update(bbox_data)
+
+            people_bbox.update({person_id: person_bbox})
+
+    return people_bbox
+
+
+for action in annotation_path.iterdir():
+    for anno_file in action.iterdir():
+        if not anno_file.suffix == ".xgtf":
+            continue
+
+        people_bbox = parse_annotation(anno_file)
+
+        if not people_bbox:
+            continue
 
         input_video_path = (
             video_path / action.name / (anno_file.with_suffix(".avi").name)
@@ -112,6 +120,7 @@ for action in annotation_path.iterdir():
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         output_frames = []
         frame_idx = 0
+
         scene_pick = random.choice(scene_list)
         scene_path = Path(scene_root_path / scene_pick)
         scene_image = cv2.imread(str(scene_path))
@@ -144,3 +153,6 @@ for action in annotation_path.iterdir():
         if len(output_frames) > 0:
             clip = ImageSequenceClip(output_frames, fps=fps)
             clip.write_videofile(str(output_video_path), audio=False)
+
+        break
+    break
