@@ -14,6 +14,7 @@ with open("annotation-list.txt") as file:
     anno_list = [line.strip() for line in file]
 
 action_only = False
+temporal_smoothing = 5
 
 colors = (
     (0, 0, 255),
@@ -120,6 +121,7 @@ for action in anno_path.iterdir():
         scene_bbox = parse_annotation(anno_path / scene_anno)
         n_scene_frames = len(scene_frames)
 
+        mean_cache = []
         output_frames = []
 
         for i, actor_frame in enumerate(actor_frames):
@@ -145,8 +147,15 @@ for action in anno_path.iterdir():
                 x2 = x1 + w
                 y2 = y1 + h
 
-                mean_color = np.mean(canvas[y1:y2, x1:x2], axis=(0, 1))
-                canvas[y1:y2, x1:x2] = mean_color
+                bbox_crop = canvas[y1:y2, x1:x2]
+                mean_bbox = np.mean(bbox_crop, axis=(0, 1))
+                mean_cache.append(mean_bbox)
+
+                mean_temporal = np.mean(mean_cache, axis=0)
+                canvas[y1:y2, x1:x2] = mean_temporal
+
+                if len(mean_cache) > temporal_smoothing:
+                    mean_cache.pop(0)
 
             for person_id, person_bbox in actor_bbox.items():
                 if i not in person_bbox:
@@ -170,5 +179,5 @@ for action in anno_path.iterdir():
             clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
             clip.write_videofile(str(output_video_path), audio=False)
 
-        # break
+        break
     break
