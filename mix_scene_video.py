@@ -9,14 +9,14 @@ from skimage.filters import gaussian
 from skimage.restoration import inpaint
 
 random.seed(46)
-scene_bbox_mode = "mean"
-anno_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
+scene_bbox_mode = "inpaint"
+annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
 output_path = Path(f"/nas.dbms/randy/datasets/ucf101-mix-scene-video-{scene_bbox_mode}")
 
 crop_action_temporally = False
 scene_mean_temporal_smoothing = 5
-scene_blur_sigma = 20
+scene_blur_sigma = 25
 
 with open("annotation-list.txt") as file:
     anno_list = [line.strip() for line in file]
@@ -98,7 +98,7 @@ def parse_annotation(file):
     return people_bbox
 
 
-for action in anno_path.iterdir():
+for action in annotation_path.iterdir():
     for actor_anno in action.iterdir():
         if not actor_anno.suffix == ".xgtf":
             continue
@@ -123,7 +123,7 @@ for action in anno_path.iterdir():
         )
         scene_video = VideoFileClip(str(scene_video_path))
         scene_frames = list(scene_video.iter_frames())
-        scene_bbox = parse_annotation(anno_path / scene_anno)
+        scene_bbox = parse_annotation(annotation_path / scene_anno)
         n_scene_frames = len(scene_frames)
 
         scene_bbox_temporal_cache = []
@@ -202,5 +202,5 @@ for action in anno_path.iterdir():
             clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
             clip.write_videofile(str(output_video_path), audio=False)
 
-        break
+        # break
     break
