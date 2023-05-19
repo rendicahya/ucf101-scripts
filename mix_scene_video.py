@@ -9,7 +9,7 @@ from skimage.filters import gaussian
 from skimage.restoration import inpaint
 
 random.seed(46)
-scene_bbox_mode = "inpaint"
+scene_bbox_mode = "black"
 annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
 output_path = Path(f"/nas.dbms/randy/datasets/ucf101-mix-scene-video-{scene_bbox_mode}")
@@ -172,6 +172,8 @@ for action in annotation_path.iterdir():
                     bbox_blur *= 255
                     bbox_blur = bbox_blur.astype(np.uint8)
                     canvas[y1:y2, x1:x2] = bbox_blur
+                elif scene_bbox_mode == "black":
+                    canvas[y1:y2, x1:x2] = 0
                 elif scene_bbox_mode == "inpaint":
                     mask[y1:y2, x1:x2] = 1
 
