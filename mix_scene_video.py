@@ -5,18 +5,21 @@ import numpy as np
 import skimage
 from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip, VideoFileClip
+from skimage.filters import gaussian
 from skimage.restoration import inpaint
 
+random.seed(46)
+scene_bbox_mode = "mean"
 anno_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
-output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene-video-inpainting")
+output_path = Path(f"/nas.dbms/randy/datasets/ucf101-mix-scene-video-{scene_bbox_mode}")
+
+crop_action_temporally = False
+scene_mean_temporal_smoothing = 5
+scene_blur_sigma = 20
 
 with open("annotation-list.txt") as file:
     anno_list = [line.strip() for line in file]
-
-action_only = False
-mode = "inpaint"
-temporal_smoothing = 5
 
 colors = (
     (0, 0, 255),
@@ -61,7 +64,7 @@ def parse_annotation(file):
             for bbox in person_locations.find_all("data:bbox"):
                 start, end = [int(i) for i in bbox["framespan"].split(":")]
 
-                if action_only:
+                if crop_action_temporally:
                     if act_start <= start <= act_end or act_start <= end <= act_end:
                         start = max(start, act_start)
                         end = min(end, act_end)
@@ -123,7 +126,7 @@ for action in anno_path.iterdir():
         scene_bbox = parse_annotation(anno_path / scene_anno)
         n_scene_frames = len(scene_frames)
 
-        mean_cache = []
+        scene_bbox_temporal_cache = []
         output_frames = []
 
         for i, actor_frame in enumerate(actor_frames):
@@ -150,20 +153,29 @@ for action in anno_path.iterdir():
                 x1, y1, w, h = [int(i) for i in bbox]
                 x2 = x1 + w
                 y2 = y1 + h
-                mask[y1:y2, x1:x2] = 1
 
-                if mode == "mean":
+                if scene_bbox_mode == "mean":
                     bbox_crop = canvas[y1:y2, x1:x2]
-                    mean_bbox = np.mean(bbox_crop, axis=(0, 1))
-                    mean_cache.append(mean_bbox)
+                    bbox_color = np.mean(bbox_crop, axis=(0, 1))
+                    scene_bbox_temporal_cache.append(bbox_color)
 
-                    if len(mean_cache) > temporal_smoothing:
-                        mean_cache.pop(0)
+                    if len(scene_bbox_temporal_cache) > scene_mean_temporal_smoothing:
+                        scene_bbox_temporal_cache.pop(0)
 
-                    mean_temporal = np.mean(mean_cache, axis=0)
-                    canvas[y1:y2, x1:x2] = mean_temporal
+                    bbox_replace = np.mean(scene_bbox_temporal_cache, axis=0)
+                    canvas[y1:y2, x1:x2] = bbox_replace
+                elif scene_bbox_mode == "blur":
+                    bbox_crop = canvas[y1:y2, x1:x2]
+                    bbox_blur = gaussian(
+                        bbox_crop, sigma=scene_blur_sigma, channel_axis=-1
+                    )
+                    bbox_blur *= 255
+                    bbox_blur = bbox_blur.astype(np.uint8)
+                    canvas[y1:y2, x1:x2] = bbox_blur
+                elif scene_bbox_mode == "inpaint":
+                    mask[y1:y2, x1:x2] = 1
 
-            if mode == "inpaint":
+            if scene_bbox_mode == "inpaint":
                 canvas = inpaint.inpaint_biharmonic(canvas, mask, channel_axis=-1)
                 canvas *= 255
                 canvas = canvas.astype(np.uint8)
@@ -189,3 +201,6 @@ for action in anno_path.iterdir():
         if len(output_frames) > 0:
             clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
             clip.write_videofile(str(output_video_path), audio=False)
+
+        break
+    break
