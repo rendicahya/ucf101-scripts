@@ -5,15 +5,17 @@ import numpy as np
 import skimage
 from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip, VideoFileClip
+from skimage.restoration import inpaint
 
 anno_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
-output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene-video")
+output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene-video-inpainting")
 
 with open("annotation-list.txt") as file:
     anno_list = [line.strip() for line in file]
 
 action_only = False
+mode = "inpaint"
 temporal_smoothing = 5
 
 colors = (
@@ -136,6 +138,8 @@ for action in anno_path.iterdir():
                     anti_aliasing=True,
                 )
 
+            mask = np.zeros(canvas.shape[:-1], dtype=bool)
+
             for person_id, person_bbox in scene_bbox.items():
                 i_mod = i % n_scene_frames
 
@@ -146,16 +150,23 @@ for action in anno_path.iterdir():
                 x1, y1, w, h = [int(i) for i in bbox]
                 x2 = x1 + w
                 y2 = y1 + h
+                mask[y1:y2, x1:x2] = 1
 
-                bbox_crop = canvas[y1:y2, x1:x2]
-                mean_bbox = np.mean(bbox_crop, axis=(0, 1))
-                mean_cache.append(mean_bbox)
+                if mode == "mean":
+                    bbox_crop = canvas[y1:y2, x1:x2]
+                    mean_bbox = np.mean(bbox_crop, axis=(0, 1))
+                    mean_cache.append(mean_bbox)
 
-                mean_temporal = np.mean(mean_cache, axis=0)
-                canvas[y1:y2, x1:x2] = mean_temporal
+                    if len(mean_cache) > temporal_smoothing:
+                        mean_cache.pop(0)
 
-                if len(mean_cache) > temporal_smoothing:
-                    mean_cache.pop(0)
+                    mean_temporal = np.mean(mean_cache, axis=0)
+                    canvas[y1:y2, x1:x2] = mean_temporal
+
+            if mode == "inpaint":
+                canvas = inpaint.inpaint_biharmonic(canvas, mask, channel_axis=-1)
+                canvas *= 255
+                canvas = canvas.astype(np.uint8)
 
             for person_id, person_bbox in actor_bbox.items():
                 if i not in person_bbox:
@@ -178,6 +189,3 @@ for action in anno_path.iterdir():
         if len(output_frames) > 0:
             clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
             clip.write_videofile(str(output_video_path), audio=False)
-
-        break
-    break
