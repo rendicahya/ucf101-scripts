@@ -9,10 +9,10 @@ from skimage.filters import gaussian
 from skimage.restoration import inpaint
 
 random.seed(46)
-scene_bbox_mode = "black"
+scene_bbox_mode = "inpaint"
 annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
-output_path = Path(f"/nas.dbms/randy/datasets/ucf101-mix-scene-video-{scene_bbox_mode}")
+output_path = Path(f"/nas.dbms/randy/datasets/ucf101-mix-scene-video-XYZ-{scene_bbox_mode}")
 
 crop_action_temporally = False
 scene_mean_temporal_smoothing = 5
@@ -175,6 +175,7 @@ for action in annotation_path.iterdir():
                 elif scene_bbox_mode == "black":
                     canvas[y1:y2, x1:x2] = 0
                 elif scene_bbox_mode == "inpaint":
+                    canvas[y1:y2, x1:x2] = 0
                     mask[y1:y2, x1:x2] = 1
 
             if scene_bbox_mode == "inpaint":
@@ -204,5 +205,5 @@ for action in annotation_path.iterdir():
             clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
             clip.write_videofile(str(output_video_path), audio=False)
 
-        # break
+        break
     break
