@@ -99,11 +99,8 @@ def operation(action, anno_file):
     output_frames = []
 
     for i, frame in enumerate(frames):
-        mask = (
-            np.zeros(frame.shape[:2], dtype=frame.dtype)
-            if mask_actor
-            else np.ones(frame.shape[:2], dtype=frame.dtype)
-        )
+        fn = np.zeros if mask_actor else np.ones
+        mask = fn(frame.shape[:2], dtype=frame.dtype)
 
         for person_id, person_bbox in people_bbox.items():
             if i not in person_bbox:
@@ -125,6 +122,4 @@ def operation(action, anno_file):
 
 
 if __name__ == "__main__":
-    utils.iterate(
-        annotation_path, operation, extension=".xgtf", progress_bar=False, single=False
-    )
+    utils.iterate(annotation_path, operation, extension=".xgtf", progress_bar=False)
