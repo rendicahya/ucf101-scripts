@@ -10,6 +10,7 @@ annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 input_path = Path("/nas.dbms/randy/datasets/ucf101")
 output_path = Path("/nas.dbms/randy/datasets/ucf101-masked")
 action_only = False
+mask_actor = False
 
 colors = (
     (0, 0, 255),
@@ -98,7 +99,11 @@ def operation(action, anno_file):
     output_frames = []
 
     for i, frame in enumerate(frames):
-        mask = np.zeros(frame.shape[:2], dtype=frame.dtype)
+        mask = (
+            np.zeros(frame.shape[:2], dtype=frame.dtype)
+            if mask_actor
+            else np.ones(frame.shape[:2], dtype=frame.dtype)
+        )
 
         for person_id, person_bbox in people_bbox.items():
             if i not in person_bbox:
@@ -108,7 +113,7 @@ def operation(action, anno_file):
             x1, y1, w, h = [int(i) for i in bbox]
             x2 = x1 + w
             y2 = y1 + h
-            mask[y1:y2, x1:x2] = 1
+            mask[y1:y2, x1:x2] = 1 if mask_actor else 0
 
         frame = cv2.bitwise_and(frame, frame, mask=mask)
 
