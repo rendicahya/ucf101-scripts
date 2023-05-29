@@ -2,16 +2,13 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import utils
 from bs4 import BeautifulSoup
-from moviepy.editor import ImageSequenceClip
+from moviepy.editor import ImageSequenceClip, VideoFileClip
 
-annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/bbox/annotations")
+annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 input_path = Path("/nas.dbms/randy/datasets/ucf101")
-output_path = Path("/nas.dbms/randy/datasets/ucf101-mask")
-n_xml = sum(
-    1 for f in annotation_path.glob("**/*") if f.is_file() and f.name.endswith(".xgtf")
-)
-
+output_path = Path("/nas.dbms/randy/datasets/ucf101-masked")
 action_only = False
 
 colors = (
@@ -24,63 +21,47 @@ colors = (
     (255, 255, 255),
 )
 
-for action in annotation_path.iterdir():
-    for anno_file in action.iterdir():
-        if not anno_file.suffix == ".xgtf":
-            continue
 
-        print(anno_file.name)
+def operation(action, anno_file):
+    if not anno_file.suffix == ".xgtf":
+        return
 
-        with open(anno_file) as f:
-            try:
-                soup = BeautifulSoup(f, features="xml")
-            except:
+    with open(anno_file) as f:
+        try:
+            soup = BeautifulSoup(f, features="xml")
+        except:
+            return
+
+    data = soup.find("data")
+    people_bbox = {}
+
+    if data is None:
+        return
+
+    for sourcefile in data.find_all("sourcefile"):
+        for person in sourcefile.find_all("object", {"name": "PERSON"}):
+            person_id = int(person["id"])
+
+            if person_id in people_bbox:
                 continue
 
-        data = soup.find("data")
-        people_bbox = {}
+            person_locations = person.find("attribute", {"name": "Location"})
+            person_bbox = {}
+            person_action = person.find("data:bvalue", {"value": "true"})
 
-        if data is None:
-            continue
+            if not person_action:
+                continue
 
-        for sourcefile in data.find_all("sourcefile"):
-            for person in sourcefile.find_all("object", {"name": "PERSON"}):
-                person_id = int(person["id"])
+            act_start, act_end = [int(i) for i in person_action["framespan"].split(":")]
 
-                if person_id in people_bbox:
-                    continue
+            for bbox in person_locations.find_all("data:bbox"):
+                start, end = [int(i) for i in bbox["framespan"].split(":")]
 
-                person_locations = person.find("attribute", {"name": "Location"})
-                person_bbox = {}
-                person_action = person.find("data:bvalue", {"value": "true"})
+                if action_only:
+                    if act_start <= start <= act_end or act_start <= end <= act_end:
+                        start = max(start, act_start)
+                        end = min(end, act_end)
 
-                if not person_action:
-                    continue
-
-                act_start, act_end = [
-                    int(i) for i in person_action["framespan"].split(":")
-                ]
-
-                for bbox in person_locations.find_all("data:bbox"):
-                    start, end = [int(i) for i in bbox["framespan"].split(":")]
-
-                    if action_only:
-                        if act_start <= start <= act_end or act_start <= end <= act_end:
-                            start = max(start, act_start)
-                            end = min(end, act_end)
-
-                            for frame in range(start - 1, end):
-                                bbox_data = {
-                                    frame: (
-                                        bbox["x"],
-                                        bbox["y"],
-                                        bbox["width"],
-                                        bbox["height"],
-                                    )
-                                }
-
-                                person_bbox.update(bbox_data)
-                    else:
                         for frame in range(start - 1, end):
                             bbox_data = {
                                 frame: (
@@ -92,49 +73,53 @@ for action in annotation_path.iterdir():
                             }
 
                             person_bbox.update(bbox_data)
+                else:
+                    for frame in range(start - 1, end):
+                        bbox_data = {
+                            frame: (
+                                bbox["x"],
+                                bbox["y"],
+                                bbox["width"],
+                                bbox["height"],
+                            )
+                        }
 
-                people_bbox.update({person_id: person_bbox})
+                        person_bbox.update(bbox_data)
 
-        input_video_path = (
-            input_path / action.name / (anno_file.with_suffix(".avi").name)
-        )
-        output_video_path = (
-            output_path / action.name / (anno_file.with_suffix(".mp4").name)
-        )
+            people_bbox.update({person_id: person_bbox})
 
-        output_video_path.parent.mkdir(parents=True, exist_ok=True)
+    input_video_path = input_path / action.name / (anno_file.with_suffix(".avi").name)
+    output_video_path = output_path / action.name / (anno_file.with_suffix(".mp4").name)
 
-        cap = cv2.VideoCapture(str(input_video_path))
-        fps = float(cap.get(cv2.CAP_PROP_FPS))
-        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        output_frames = []
-        frame_idx = 0
+    output_video_path.parent.mkdir(parents=True, exist_ok=True)
 
-        while cap.isOpened():
-            ret, frame = cap.read()
+    clip = VideoFileClip(str(input_video_path))
+    frames = clip.iter_frames()
+    output_frames = []
 
-            if not ret:
-                break
+    for i, frame in enumerate(frames):
+        mask = np.zeros(frame.shape[:2], dtype=frame.dtype)
 
-            mask = np.zeros(frame.shape[:2], dtype=frame.dtype)
+        for person_id, person_bbox in people_bbox.items():
+            if i not in person_bbox:
+                continue
 
-            for person_id, person_bbox in people_bbox.items():
-                if frame_idx not in person_bbox:
-                    continue
+            bbox = person_bbox[i]
+            x1, y1, w, h = [int(i) for i in bbox]
+            x2 = x1 + w
+            y2 = y1 + h
+            mask[y1:y2, x1:x2] = 1
 
-                bbox = person_bbox[frame_idx]
-                x1, y1, w, h = [int(i) for i in bbox]
-                x2 = x1 + w
-                y2 = y1 + h
-                mask[y1:y2, x1:x2] = 1
+        frame = cv2.bitwise_and(frame, frame, mask=mask)
 
-            frame = cv2.bitwise_and(frame, frame, mask=mask)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame_idx += 1
+        output_frames.append(frame)
 
-            output_frames.append(frame)
+    if len(output_frames) > 0:
+        clip = ImageSequenceClip(output_frames, fps=clip.fps)
+        clip.write_videofile(str(output_video_path), audio=False)
 
-        if len(output_frames) > 0:
-            clip = ImageSequenceClip(output_frames, fps=fps)
-            clip.write_videofile(str(output_video_path), audio=False)
+
+if __name__ == "__main__":
+    utils.iterate(
+        annotation_path, operation, extension=".xgtf", progress_bar=False, single=False
+    )
