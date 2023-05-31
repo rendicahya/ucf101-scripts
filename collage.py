@@ -26,7 +26,7 @@ for action in input_path.iterdir():
 
             clip = []
 
-    final_video = concatenate_videoclips(clips)
-    final_video.without_audio().write_videofile(
+    collage = concatenate_videoclips(clips)
+    collage.without_audio().write_videofile(
         str(output_path / action.with_suffix(".mp4").name)
     )
