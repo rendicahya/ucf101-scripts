@@ -2,16 +2,14 @@ import random
 from pathlib import Path
 
 import cv2
+import utils
 from bs4 import BeautifulSoup
-from moviepy.editor import ImageSequenceClip
+from moviepy.editor import ImageSequenceClip, VideoFileClip
 
 annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
 scene_root_path = Path("/nas.dbms/randy/datasets/places365")
 output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene")
-n_xml = sum(
-    1 for f in annotation_path.glob("**/*") if f.is_file() and f.name.endswith(".xgtf")
-)
 
 with open(scene_root_path / "val.txt") as file:
     scene_list = [line.strip() for line in file]
@@ -69,10 +67,10 @@ def parse_annotation(file):
                         for frame in range(start - 1, end):
                             bbox_data = {
                                 frame: (
-                                    bbox["x"],
-                                    bbox["y"],
-                                    bbox["width"],
-                                    bbox["height"],
+                                    int(bbox["x"]),
+                                    int(bbox["y"]),
+                                    int(bbox["width"]),
+                                    int(bbox["height"]),
                                 )
                             }
 
@@ -81,10 +79,10 @@ def parse_annotation(file):
                     for frame in range(start - 1, end):
                         bbox_data = {
                             frame: (
-                                bbox["x"],
-                                bbox["y"],
-                                bbox["width"],
-                                bbox["height"],
+                                int(bbox["x"]),
+                                int(bbox["y"]),
+                                int(bbox["width"]),
+                                int(bbox["height"]),
                             )
                         }
 
@@ -95,64 +93,47 @@ def parse_annotation(file):
     return people_bbox
 
 
-for action in annotation_path.iterdir():
-    for anno_file in action.iterdir():
-        if not anno_file.suffix == ".xgtf":
-            continue
+def operation(action, anno_file):
+    if not anno_file.suffix == ".xgtf":
+        return
 
-        people_bbox = parse_annotation(anno_file)
+    people_bbox = parse_annotation(anno_file)
 
-        if not people_bbox:
-            continue
+    if not people_bbox:
+        return
 
-        input_video_path = (
-            video_path / action.name / (anno_file.with_suffix(".avi").name)
-        )
-        output_video_path = (
-            output_path / action.name / (anno_file.with_suffix(".mp4").name)
-        )
+    input_video_path = video_path / action.name / (anno_file.with_suffix(".avi").name)
+    output_video_path = output_path / action.name / (anno_file.with_suffix(".mp4").name)
 
-        output_video_path.parent.mkdir(parents=True, exist_ok=True)
+    output_video_path.parent.mkdir(parents=True, exist_ok=True)
 
-        cap = cv2.VideoCapture(str(input_video_path))
-        fps = float(cap.get(cv2.CAP_PROP_FPS))
-        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        output_frames = []
-        frame_idx = 0
+    clip = VideoFileClip(str(input_video_path))
+    output_frames = []
 
-        scene_pick = random.choice(scene_list)
-        scene_path = Path(scene_root_path / scene_pick)
-        scene_image = cv2.imread(str(scene_path))
-        scene_image = cv2.resize(scene_image, (frame_width, frame_height))
+    scene_pick = random.choice(scene_list)
+    scene_path = Path(scene_root_path / scene_pick)
+    scene_image = cv2.imread(str(scene_path))
+    scene_image = cv2.resize(scene_image, (clip.w, clip.h))
 
-        while cap.isOpened():
-            ret, frame = cap.read()
+    for i, frame in enumerate(clip.iter_frames()):
+        mix_image = scene_image.copy()
 
-            if not ret:
-                break
+        for person_id, person_bbox in people_bbox.items():
+            if i not in person_bbox:
+                continue
 
-            mix_image = scene_image.copy()
+            x1, y1, w, h = person_bbox[i]
+            x2 = x1 + w
+            y2 = y1 + h
+            person_crop = frame[y1:y2, x1:x2]
+            mix_image[y1:y2, x1:x2] = person_crop
 
-            for person_id, person_bbox in people_bbox.items():
-                if frame_idx not in person_bbox:
-                    continue
+        output_frames.append(mix_image)
 
-                bbox = person_bbox[frame_idx]
-                x1, y1, w, h = [int(i) for i in bbox]
-                x2 = x1 + w
-                y2 = y1 + h
-                person_crop = frame[y1:y2, x1:x2]
-                mix_image[y1:y2, x1:x2] = person_crop
+    if len(output_frames) > 0:
+        clip = ImageSequenceClip(output_frames, fps=clip.fps)
+        clip.without_audio().write_videofile(str(output_video_path))
 
-            mix_image = cv2.cvtColor(mix_image, cv2.COLOR_BGR2RGB)
-            frame_idx += 1
 
-            output_frames.append(mix_image)
-
-        if len(output_frames) > 0:
-            clip = ImageSequenceClip(output_frames, fps=fps)
-            clip.write_videofile(str(output_video_path), audio=False)
-
-        break
-    break
+if __name__ == "__main__":
+    utils.iterate(annotation_path, operation, extension=".xgtf", single=True)
