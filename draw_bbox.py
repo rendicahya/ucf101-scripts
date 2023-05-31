@@ -67,10 +67,10 @@ def operation(action, anno_file):
                         for frame in range(start - 1, end):
                             bbox_data = {
                                 frame: (
-                                    bbox["x"],
-                                    bbox["y"],
-                                    bbox["width"],
-                                    bbox["height"],
+                                    int(bbox["x"]),
+                                    int(bbox["y"]),
+                                    int(bbox["width"]),
+                                    int(bbox["height"]),
                                 )
                             }
 
@@ -79,10 +79,10 @@ def operation(action, anno_file):
                     for frame in range(start - 1, end):
                         bbox_data = {
                             frame: (
-                                bbox["x"],
-                                bbox["y"],
-                                bbox["width"],
-                                bbox["height"],
+                                int(bbox["x"]),
+                                int(bbox["y"]),
+                                int(bbox["width"]),
+                                int(bbox["height"]),
                             )
                         }
 
@@ -116,8 +116,7 @@ def operation(action, anno_file):
             if i not in person_bbox:
                 continue
 
-            bbox = person_bbox[i]
-            x1, y1, w, h = [int(i) for i in bbox]
+            x1, y1, w, h = person_bbox[i]
             x2 = x1 + w
             y2 = y1 + h
 
