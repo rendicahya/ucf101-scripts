@@ -9,7 +9,7 @@ from moviepy.editor import ImageSequenceClip, VideoFileClip
 annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
 scene_root_path = Path("/nas.dbms/randy/datasets/places365")
-output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene")
+output_path = Path("/nas.dbms/randy/datasets/ucf101-mix-scene-image")
 
 with open(scene_root_path / "val.txt") as file:
     scene_list = [line.strip() for line in file]

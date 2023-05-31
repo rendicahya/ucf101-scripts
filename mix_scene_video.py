@@ -3,16 +3,22 @@ from pathlib import Path
 
 import numpy as np
 import skimage
+import utils
 from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip, VideoFileClip
 from skimage.filters import gaussian
 from skimage.restoration import inpaint
 
 random.seed(46)
-scene_bbox_mode = "inpaint"
+
+available_modes = "mean", "blur", "black", "inpaint"
+scene_bbox_mode = available_modes[2]
+
 annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
 video_path = Path("/nas.dbms/randy/datasets/ucf101")
-output_path = Path(f"/nas.dbms/randy/datasets/ucf101-mix-scene-video-XYZ-{scene_bbox_mode}")
+output_path = Path(
+    f"/nas.dbms/randy/datasets/ucf101-mix-scene-video-XYZ-{scene_bbox_mode}"
+)
 
 crop_action_temporally = False
 scene_mean_temporal_smoothing = 5
@@ -72,10 +78,10 @@ def parse_annotation(file):
                         for frame in range(start - 1, end):
                             bbox_data = {
                                 frame: (
-                                    bbox["x"],
-                                    bbox["y"],
-                                    bbox["width"],
-                                    bbox["height"],
+                                    int(bbox["x"]),
+                                    int(bbox["y"]),
+                                    int(bbox["width"]),
+                                    int(bbox["height"]),
                                 )
                             }
 
@@ -84,10 +90,10 @@ def parse_annotation(file):
                     for frame in range(start - 1, end):
                         bbox_data = {
                             frame: (
-                                bbox["x"],
-                                bbox["y"],
-                                bbox["width"],
-                                bbox["height"],
+                                int(bbox["x"]),
+                                int(bbox["y"]),
+                                int(bbox["width"]),
+                                int(bbox["height"]),
                             )
                         }
 
@@ -98,112 +104,104 @@ def parse_annotation(file):
     return people_bbox
 
 
-for action in annotation_path.iterdir():
-    for actor_anno in action.iterdir():
-        if not actor_anno.suffix == ".xgtf":
-            continue
+def operation(action, actor_anno):
+    actor_bbox = parse_annotation(actor_anno)
 
-        actor_bbox = parse_annotation(actor_anno)
+    if not actor_bbox:
+        return
 
-        if not actor_bbox:
-            continue
+    actor_video_path = video_path / action.name / actor_anno.with_suffix(".avi").name
 
-        actor_video_path = (
-            video_path / action.name / actor_anno.with_suffix(".avi").name
-        )
+    actor_video = VideoFileClip(str(actor_video_path))
+    actor_frames = actor_video.iter_frames()
 
-        actor_video = VideoFileClip(str(actor_video_path))
-        actor_frames = actor_video.iter_frames()
-        scene_anno = random.choice(anno_list)
-        scene_anno_path = Path(scene_anno)
-        scene_video_path = (
-            video_path
-            / scene_anno_path.parent.name
-            / scene_anno_path.with_suffix(".avi").name
-        )
-        scene_video = VideoFileClip(str(scene_video_path))
-        scene_frames = list(scene_video.iter_frames())
-        scene_bbox = parse_annotation(annotation_path / scene_anno)
-        n_scene_frames = len(scene_frames)
+    scene_anno = random.choice(anno_list)
+    scene_anno_path = Path(scene_anno)
+    scene_video_path = (
+        video_path
+        / scene_anno_path.parent.name
+        / scene_anno_path.with_suffix(".avi").name
+    )
+    scene_video = VideoFileClip(str(scene_video_path))
+    scene_frames = list(scene_video.iter_frames())
+    scene_bbox = parse_annotation(annotation_path / scene_anno)
+    n_scene_frames = len(scene_frames)
 
-        scene_bbox_temporal_cache = []
-        output_frames = []
+    scene_bbox_temporal_cache = []
+    output_frames = []
 
-        for i, actor_frame in enumerate(actor_frames):
-            canvas = scene_frames[i % n_scene_frames].copy()
+    for i, actor_frame in enumerate(actor_frames):
+        canvas = scene_frames[i % n_scene_frames].copy()
 
-            if canvas.shape[0] != actor_video.h or canvas.shape[1] != actor_video.w:
-                canvas = skimage.transform.resize(
-                    canvas,
-                    (actor_video.h, actor_video.w),
-                    mode="reflect",
-                    preserve_range=True,
-                    anti_aliasing=True,
-                )
+        if canvas.shape[0] != actor_video.h or canvas.shape[1] != actor_video.w:
+            canvas = skimage.transform.resize(
+                canvas,
+                (actor_video.h, actor_video.w),
+                mode="reflect",
+                preserve_range=True,
+                anti_aliasing=True,
+            )
 
-            mask = np.zeros(canvas.shape[:-1], dtype=bool)
+        mask = np.zeros(canvas.shape[:-1], dtype=bool)
 
-            for person_id, person_bbox in scene_bbox.items():
-                i_mod = i % n_scene_frames
+        for person_id, person_bbox in scene_bbox.items():
+            i_mod = i % n_scene_frames
 
-                if i_mod not in person_bbox:
-                    continue
+            if i_mod not in person_bbox:
+                continue
 
-                bbox = person_bbox[i_mod]
-                x1, y1, w, h = [int(i) for i in bbox]
-                x2 = x1 + w
-                y2 = y1 + h
+            x1, y1, w, h = person_bbox[i_mod]
+            x2 = x1 + w
+            y2 = y1 + h
 
-                if scene_bbox_mode == "mean":
-                    bbox_crop = canvas[y1:y2, x1:x2]
-                    bbox_color = np.mean(bbox_crop, axis=(0, 1))
-                    scene_bbox_temporal_cache.append(bbox_color)
+            if scene_bbox_mode == "mean":
+                bbox_crop = canvas[y1:y2, x1:x2]
+                bbox_color = np.mean(bbox_crop, axis=(0, 1))
+                scene_bbox_temporal_cache.append(bbox_color)
 
-                    if len(scene_bbox_temporal_cache) > scene_mean_temporal_smoothing:
-                        scene_bbox_temporal_cache.pop(0)
+                if len(scene_bbox_temporal_cache) > scene_mean_temporal_smoothing:
+                    scene_bbox_temporal_cache.pop(0)
 
-                    bbox_replace = np.mean(scene_bbox_temporal_cache, axis=0)
-                    canvas[y1:y2, x1:x2] = bbox_replace
-                elif scene_bbox_mode == "blur":
-                    bbox_crop = canvas[y1:y2, x1:x2]
-                    bbox_blur = gaussian(
-                        bbox_crop, sigma=scene_blur_sigma, channel_axis=-1
-                    )
-                    bbox_blur *= 255
-                    bbox_blur = bbox_blur.astype(np.uint8)
-                    canvas[y1:y2, x1:x2] = bbox_blur
-                elif scene_bbox_mode == "black":
-                    canvas[y1:y2, x1:x2] = 0
-                elif scene_bbox_mode == "inpaint":
-                    canvas[y1:y2, x1:x2] = 0
-                    mask[y1:y2, x1:x2] = 1
+                bbox_replace = np.mean(scene_bbox_temporal_cache, axis=0)
+                canvas[y1:y2, x1:x2] = bbox_replace
+            elif scene_bbox_mode == "blur":
+                bbox_crop = canvas[y1:y2, x1:x2]
+                bbox_blur = gaussian(bbox_crop, sigma=scene_blur_sigma, channel_axis=-1)
+                bbox_blur *= 255
+                bbox_blur = bbox_blur.astype(np.uint8)
+                canvas[y1:y2, x1:x2] = bbox_blur
+            elif scene_bbox_mode == "black":
+                canvas[y1:y2, x1:x2] = 0
+            elif scene_bbox_mode == "inpaint":
+                canvas[y1:y2, x1:x2] = 0
+                mask[y1:y2, x1:x2] = 1
 
-            if scene_bbox_mode == "inpaint":
-                canvas = inpaint.inpaint_biharmonic(canvas, mask, channel_axis=-1)
-                canvas *= 255
-                canvas = canvas.astype(np.uint8)
+        if scene_bbox_mode == "inpaint":
+            canvas = inpaint.inpaint_biharmonic(canvas, mask, channel_axis=-1)
+            canvas *= 255
+            canvas = canvas.astype(np.uint8)
 
-            for person_id, person_bbox in actor_bbox.items():
-                if i not in person_bbox:
-                    continue
+        for person_id, person_bbox in actor_bbox.items():
+            if i not in person_bbox:
+                continue
 
-                bbox = person_bbox[i]
-                x1, y1, w, h = [int(i) for i in bbox]
-                x2 = x1 + w
-                y2 = y1 + h
-                canvas[y1:y2, x1:x2] = actor_frame[y1:y2, x1:x2]
+            x1, y1, w, h = person_bbox[i]
+            x2 = x1 + w
+            y2 = y1 + h
+            canvas[y1:y2, x1:x2] = actor_frame[y1:y2, x1:x2]
 
-            output_frames.append(canvas)
+        output_frames.append(canvas)
 
-        output_video_path = (
-            output_path / action.name / actor_anno.with_suffix(".mp4").name
-        )
+    output_video_path = output_path / action.name / actor_anno.with_suffix(".mp4").name
 
-        output_video_path.parent.mkdir(parents=True, exist_ok=True)
+    output_video_path.parent.mkdir(parents=True, exist_ok=True)
 
-        if len(output_frames) > 0:
-            clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
-            clip.write_videofile(str(output_video_path), audio=False)
+    if len(output_frames) > 0:
+        clip = ImageSequenceClip(output_frames, fps=actor_video.fps)
+        clip.write_videofile(str(output_video_path), audio=False)
 
-        break
-    break
+
+if __name__ == "__main__":
+    utils.iterate(
+        annotation_path, operation, extension=".xgtf", progress_bar=False, single=True
+    )
