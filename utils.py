@@ -26,7 +26,7 @@ def iterate(path: Path, operation, extension=None, progress_bar=True, single=Fal
                 break
 
 
-def count_files(path: Path, recursive=False, extension=None):
+def count_files(path: Path, recursive=True, extension=None):
     pattern = "**/*" if recursive else "*"
     filter = (
         (lambda f: f.is_file())
