@@ -94,9 +94,6 @@ def parse_annotation(file):
 
 
 def operation(action, anno_file):
-    if not anno_file.suffix == ".xgtf":
-        return
-
     people_bbox = parse_annotation(anno_file)
 
     if not people_bbox:
