@@ -24,9 +24,6 @@ colors = (
 
 
 def operation(action, anno_file):
-    if not anno_file.suffix == ".xgtf":
-        return
-
     with open(anno_file) as f:
         try:
             soup = BeautifulSoup(f, features="xml")
