@@ -11,7 +11,7 @@ output_path = Path("/nas.dbms/randy/datasets/ucf101-bbox")
 bbox_thickness = 2
 
 print_frame_number = False
-action_only = True
+action_only = False
 
 colors = (
     (0, 0, 255),
