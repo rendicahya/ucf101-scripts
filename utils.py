@@ -10,7 +10,7 @@ def iterate(path: Path, operation, extension=None, progress_bar=True, single=Fal
     with tqdm(total=n_files) if progress_bar else nullcontext() as bar:
         for action in path.iterdir():
             for video in action.iterdir():
-                if video.suffix != extension:
+                if extension and video.suffix != extension:
                     continue
 
                 if progress_bar:
