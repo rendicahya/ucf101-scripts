@@ -4,7 +4,6 @@ import re
 
 import click
 import pandas as pd
-from gensim.models import KeyedVectors
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.wsd import lesk
@@ -52,23 +51,7 @@ def sim_nltk(phrase1, phrase2):
     return similarity_score
 
 
-def sim_googlenews(phrase1, phrase2):
-    word2vec_model = KeyedVectors.load_word2vec_format(
-        "GoogleNews-vectors-negative300.bin", binary=True
-    )
-
-    return word2vec_model.similarity(phrase1, phrase2)
-
-
-def sim_glove(phrase1, phrase2):
-    word2vec_model = KeyedVectors.load_word2vec_format(
-        "glove-wiki-gigaword-100", binary=False
-    )
-
-    return word2vec_model.similarity(phrase1, phrase2)
-
-
-def sbert(phrase1, phrase2, model):
+def calc_similarity(phrase1, phrase2, model):
     emb1 = model.encode(phrase1)
     emb2 = model.encode(phrase2)
 
@@ -91,22 +74,39 @@ def sbert(phrase1, phrase2, model):
 def main(dataset_path):
     camelcase_tokenizer = re.compile(r"(?<!^)(?=[A-Z])")
     n_subdir = sum([1 for _ in dataset_path.iterdir() if _.is_dir()])
-    sbert_model = SentenceTransformer("all-MiniLM-L6-v2")
     actions = [action.name for action in dataset_path.iterdir()]
-    df_data = []
 
     with open("objects365.json", "r") as file:
         obj365 = json.load(file)
 
-    for subdir in tqdm(dataset_path.iterdir(), total=n_subdir):
-        action = camelcase_tokenizer.sub(" ", subdir.name).lower()
-        row = [float(sbert(action, obj, sbert_model)) for obj in obj365]
-
-        df_data.append(row)
-
-    pd.DataFrame(df_data, columns=obj365, index=actions).to_csv(
-        "relevancy-matrix-sbert.csv"
+    models = (
+        "all-mpnet-base-v2",
+        "multi-qa-mpnet-base-dot-v1",
+        "all-distilroberta-v1",
+        "all-MiniLM-L12-v2",
+        "multi-qa-distilbert-cos-v1",
+        "all-MiniLM-L6-v2",
+        "multi-qa-MiniLM-L6-cos-v1",
+        "paraphrase-multilingual-mpnet-base-v2",
+        "paraphrase-albert-small-v2",
+        "paraphrase-multilingual-MiniLM-L12-v2",
     )
+
+    for model in models:
+        print("Running model:", model)
+
+        sbert_model = SentenceTransformer(model)
+        df_data = []
+
+        for subdir in tqdm(dataset_path.iterdir(), total=n_subdir):
+            action = camelcase_tokenizer.sub(" ", subdir.name).lower()
+            row = [float(calc_similarity(action, obj, sbert_model)) for obj in obj365]
+
+            df_data.append(row)
+
+        pd.DataFrame(df_data, columns=obj365, index=actions).to_csv(
+            f"matrices/relevancy-matrix-{model}.csv"
+        )
 
 
 if __name__ == "__main__":
