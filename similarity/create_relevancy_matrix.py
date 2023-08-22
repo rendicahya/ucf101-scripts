@@ -4,18 +4,23 @@ import re
 
 import click
 import pandas as pd
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.wsd import lesk
 from sentence_transformers import SentenceTransformer, util
 from tqdm import tqdm
 
 
-def calc_similarity(phrase1, phrase2, model):
-    emb1 = model.encode(phrase1)
-    emb2 = model.encode(phrase2)
+def encode_cached(phrase, model, embed_bank):
+    if phrase not in embed_bank:
+        embedding = model.encode(phrase)
+        embed_bank[phrase] = embedding
 
-    return util.cos_sim(emb1, emb2)
+    return embed_bank[phrase]
+
+
+def calc_similarity(phrase1, phrase2, model, embed_bank):
+    emb1 = encode_cached(phrase1, model, embed_bank)
+    emb2 = encode_cached(phrase2, model, embed_bank)
+
+    return float(util.cos_sim(emb1, emb2))
 
 
 @click.command()
@@ -52,20 +57,21 @@ def main(dataset_path):
         "paraphrase-multilingual-MiniLM-L12-v2",
     )
 
-    for model in models:
-        print("Running model:", model)
+    for model_name in models:
+        print("Running model:", model_name)
 
-        sbert_model = SentenceTransformer(model)
+        model = SentenceTransformer(model_name)
+        embed_bank = {}
         df_data = []
 
         for subdir in tqdm(dataset_path.iterdir(), total=n_subdir):
             action = camelcase_tokenizer.sub(" ", subdir.name).lower()
-            row = [float(calc_similarity(action, obj, sbert_model)) for obj in obj365]
+            row = [calc_similarity(action, obj, model, embed_bank) for obj in obj365]
 
             df_data.append(row)
 
         pd.DataFrame(df_data, columns=obj365, index=actions).to_csv(
-            f"matrix/{model}.csv"
+            f"matrix/{model_name}.csv"
         )
 
 
