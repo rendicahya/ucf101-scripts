@@ -1,608 +1,406 @@
-[
-  {
-    "ApplyEyeMakeup": [
-      "Cosmetics",
-      "Cosmetics Brush/Eyeliner Pencil"
-    ]
-  },
-  {
-    "ApplyLipstick": [
-      "Lipstick",
-      "Cosmetics"
-    ]
-  },
-  {
-    "Archery": [
-      "Deer",
-      "Basketball"
-    ]
-  },
-  {
-    "BabyCrawling": [
-      "Stroller",
-      "Ladder"
-    ]
-  },
-  {
-    "BalanceBeam": [
-      "Slide",
-      "Skiboard"
-    ]
-  },
-  {
-    "BandMarching": [
-      "Drum",
-      "Trombone"
-    ]
-  },
-  {
-    "BaseballPitch": [
-      "Baseball",
-      "Baseball Bat"
-    ]
-  },
-  {
-    "Basketball": [
-      "Basketball",
-      "Volleyball"
-    ]
-  },
-  {
-    "BasketballDunk": [
-      "Basketball",
-      "Volleyball"
-    ]
-  },
-  {
-    "BenchPress": [
-      "Bench",
-      "Dumbbell"
-    ]
-  },
-  {
-    "Biking": [
-      "Bicycle",
-      "Motorcycle"
-    ]
-  },
-  {
-    "Billiards": [
-      "Billiards",
-      "Table Tennis"
-    ]
-  },
-  {
-    "BlowDryHair": [
-      "Hair Dryer",
-      "Brush"
-    ]
-  },
-  {
-    "BlowingCandles": [
-      "Candle",
-      "Lantern"
-    ]
-  },
-  {
-    "BodyWeightSquats": [
-      "Dumbbell",
-      "Bench"
-    ]
-  },
-  {
-    "Bowling": [
-      "Curling",
-      "Tennis"
-    ]
-  },
-  {
-    "BoxingPunchingBag": [
-      "Dumbbell",
-      "Hammer"
-    ]
-  },
-  {
-    "BoxingSpeedBag": [
-      "Handbag/Satchel",
-      "Backpack"
-    ]
-  },
-  {
-    "BreastStroke": [
-      "Brush",
-      "Cup"
-    ]
-  },
-  {
-    "BrushingTeeth": [
-      "Toothbrush",
-      "Brush"
-    ]
-  },
-  {
-    "CleanAndJerk": [
-      "Cleaning Products",
-      "Brush"
-    ]
-  },
-  {
-    "CliffDiving": [
-      "Skiboard",
-      "Slide"
-    ]
-  },
-  {
-    "CricketBowling": [
-      "Baseball",
-      "Baseball Bat"
-    ]
-  },
-  {
-    "CricketShot": [
-      "Baseball Bat",
-      "Golf Ball"
-    ]
-  },
-  {
-    "CuttingInKitchen": [
-      "Cutting/chopping Board",
-      "Scissors"
-    ]
-  },
-  {
-    "Diving": [
-      "Dolphin",
-      "Volleyball"
-    ]
-  },
-  {
-    "Drumming": [
-      "Drum",
-      "Trumpet"
-    ]
-  },
-  {
-    "Fencing": [
-      "Volleyball",
-      "Curling"
-    ]
-  },
-  {
-    "FieldHockeyPenalty": [
-      "Hockey Stick",
-      "Soccer"
-    ]
-  },
-  {
-    "FloorGymnastics": [
-      "Volleyball",
-      "Table Tennis"
-    ]
-  },
-  {
-    "FrisbeeCatch": [
-      "Frisbee",
-      "Golf Ball"
-    ]
-  },
-  {
-    "FrontCrawl": [
-      "Ladder",
-      "Slide"
-    ]
-  },
-  {
-    "GolfSwing": [
-      "Swing",
-      "Golf Club"
-    ]
-  },
-  {
-    "Haircut": [
-      "Scissors",
-      "Comb"
-    ]
-  },
-  {
-    "HammerThrow": [
-      "Hammer",
-      "Baseball Bat"
-    ]
-  },
-  {
-    "Hammering": [
-      "Hammer",
-      "Electric Drill"
-    ]
-  },
-  {
-    "HandstandPushups": [
-      "Billiards",
-      "Dumbbell"
-    ]
-  },
-  {
-    "HandstandWalking": [
-      "Treadmill",
-      "Crosswalk Sign"
-    ]
-  },
-  {
-    "HeadMassage": [
-      "Head Phone",
-      "Showerhead"
-    ]
-  },
-  {
-    "HighJump": [
-      "High Heels",
-      "Hurdle"
-    ]
-  },
-  {
-    "HorseRace": [
-      "Horse",
-      "Tie"
-    ]
-  },
-  {
-    "HorseRiding": [
-      "Horse",
-      "Motorcycle"
-    ]
-  },
-  {
-    "HulaHoop": [
-      "Kite",
-      "Drum"
-    ]
-  },
-  {
-    "IceDancing": [
-      "Ice cream",
-      "Skateboard"
-    ]
-  },
-  {
-    "JavelinThrow": [
-      "Golf Ball",
-      "Volleyball"
-    ]
-  },
-  {
-    "JugglingBalls": [
-      "Other Balls",
-      "Jug"
-    ]
-  },
-  {
-    "JumpRope": [
-      "Ladder",
-      "Volleyball"
-    ]
-  },
-  {
-    "JumpingJack": [
-      "Swing",
-      "Billiards"
-    ]
-  },
-  {
-    "Kayaking": [
-      "Paddle",
-      "Boat"
-    ]
-  },
-  {
-    "Knitting": [
-      "Curling",
-      "Pasta"
-    ]
-  },
-  {
-    "LongJump": [
-      "Hurdle",
-      "Ladder"
-    ]
-  },
-  {
-    "Lunges": [
-      "Volleyball",
-      "Basketball"
-    ]
-  },
-  {
-    "MilitaryParade": [
-      "Flag",
-      "Slide"
-    ]
-  },
-  {
-    "Mixing": [
-      "Blender",
-      "Jug"
-    ]
-  },
-  {
-    "MoppingFloor": [
-      "Mop",
-      "Carpet"
-    ]
-  },
-  {
-    "Nunchucks": [
-      "Mushroom",
-      "Duck"
-    ]
-  },
-  {
-    "ParallelBars": [
-      "Barbell",
-      "Crosswalk Sign"
-    ]
-  },
-  {
-    "PizzaTossing": [
-      "Pizza",
-      "Meat ball"
-    ]
-  },
-  {
-    "PlayingCello": [
-      "Cello",
-      "Violin"
-    ]
-  },
-  {
-    "PlayingDaf": [
-      "Billiards",
-      "Cue"
-    ]
-  },
-  {
-    "PlayingDhol": [
-      "Billiards",
-      "Table Tennis"
-    ]
-  },
-  {
-    "PlayingFlute": [
-      "Flute",
-      "Violin"
-    ]
-  },
-  {
-    "PlayingGuitar": [
-      "Guitar",
-      "Violin"
-    ]
-  },
-  {
-    "PlayingPiano": [
-      "Piano",
-      "Violin"
-    ]
-  },
-  {
-    "PlayingSitar": [
-      "Violin",
-      "Table Tennis"
-    ]
-  },
-  {
-    "PlayingTabla": [
-      "Table Tennis",
-      "Billiards"
-    ]
-  },
-  {
-    "PlayingViolin": [
-      "Violin",
-      "Piano"
-    ]
-  },
-  {
-    "PoleVault": [
-      "Ladder",
-      "Stool"
-    ]
-  },
-  {
-    "PommelHorse": [
-      "Horse",
-      "Donkey"
-    ]
-  },
-  {
-    "PullUps": [
-      "Spring Rolls",
-      "Pickup Truck"
-    ]
-  },
-  {
-    "Punch": [
-      "Hammer",
-      "Knife"
-    ]
-  },
-  {
-    "PushUps": [
-      "Spring Rolls",
-      "Dumbbell"
-    ]
-  },
-  {
-    "Rafting": [
-      "Sailboat",
-      "Boat"
-    ]
-  },
-  {
-    "RockClimbingIndoor": [
-      "Ladder",
-      "Curling"
-    ]
-  },
-  {
-    "RopeClimbing": [
-      "Ladder",
-      "Curling"
-    ]
-  },
-  {
-    "Rowing": [
-      "Curling",
-      "Boat"
-    ]
-  },
-  {
-    "SalsaSpin": [
-      "Coconut",
-      "Billiards"
-    ]
-  },
-  {
-    "ShavingBeard": [
-      "Brush",
-      "Comb"
-    ]
-  },
-  {
-    "Shotput": [
-      "Gun",
-      "Pot"
-    ]
-  },
-  {
-    "SkateBoarding": [
-      "Skateboard",
-      "Skiboard"
-    ]
-  },
-  {
-    "Skiing": [
-      "Skiboard",
-      "Skating and Skiing shoes"
-    ]
-  },
-  {
-    "Skijet": [
-      "Skiboard",
-      "Airplane"
-    ]
-  },
-  {
-    "SkyDiving": [
-      "Hot-air balloon",
-      "Kite"
-    ]
-  },
-  {
-    "SoccerJuggling": [
-      "Soccer",
-      "Jug"
-    ]
-  },
-  {
-    "SoccerPenalty": [
-      "Soccer",
-      "American Football"
-    ]
-  },
-  {
-    "StillRings": [
-      "Ring",
-      "Cell Phone"
-    ]
-  },
-  {
-    "SumoWrestling": [
-      "Volleyball",
-      "Soccer"
-    ]
-  },
-  {
-    "Surfing": [
-      "Surfboard",
-      "Volleyball"
-    ]
-  },
-  {
-    "Swing": [
-      "Swing",
-      "Belt"
-    ]
-  },
-  {
-    "TableTennisShot": [
-      "Table Tennis",
-      "Table Tennis paddle"
-    ]
-  },
-  {
-    "TaiChi": [
-      "Table Tennis",
-      "Volleyball"
-    ]
-  },
-  {
-    "TennisSwing": [
-      "Swing",
-      "Tennis"
-    ]
-  },
-  {
-    "ThrowDiscus": [
-      "Golf Ball",
-      "Curling"
-    ]
-  },
-  {
-    "TrampolineJumping": [
-      "Volleyball",
-      "Hot-air balloon"
-    ]
-  },
-  {
-    "Typing": [
-      "Keyboard",
-      "Pen/Pencil"
-    ]
-  },
-  {
-    "UnevenBars": [
-      "Barbell",
-      "Hurdle"
-    ]
-  },
-  {
-    "VolleyballSpiking": [
-      "Volleyball",
-      "Billiards"
-    ]
-  },
-  {
-    "WalkingWithDog": [
-      "Dog",
-      "Stroller"
-    ]
-  },
-  {
-    "WallPushups": [
-      "Billiards",
-      "Dumbbell"
-    ]
-  },
-  {
-    "WritingOnBoard": [
-      "Game board",
-      "Board Eraser"
-    ]
-  },
-  {
-    "YoYo": [
-      "Yak",
-      "Strawberry"
-    ]
-  }
-]
+{
+  "ApplyEyeMakeup": [
+    "Cosmetics",
+    "Cosmetics Brush/Eyeliner Pencil"
+  ],
+  "ApplyLipstick": [
+    "Lipstick",
+    "Cosmetics"
+  ],
+  "Archery": [
+    "Deer",
+    "Basketball"
+  ],
+  "BabyCrawling": [
+    "Stroller",
+    "Ladder"
+  ],
+  "BalanceBeam": [
+    "Slide",
+    "Skiboard"
+  ],
+  "BandMarching": [
+    "Drum",
+    "Trombone"
+  ],
+  "BaseballPitch": [
+    "Baseball",
+    "Baseball Bat"
+  ],
+  "Basketball": [
+    "Basketball",
+    "Volleyball"
+  ],
+  "BasketballDunk": [
+    "Basketball",
+    "Volleyball"
+  ],
+  "BenchPress": [
+    "Bench",
+    "Dumbbell"
+  ],
+  "Biking": [
+    "Bicycle",
+    "Motorcycle"
+  ],
+  "Billiards": [
+    "Billiards",
+    "Table Tennis"
+  ],
+  "BlowDryHair": [
+    "Hair Dryer",
+    "Brush"
+  ],
+  "BlowingCandles": [
+    "Candle",
+    "Lantern"
+  ],
+  "BodyWeightSquats": [
+    "Dumbbell",
+    "Bench"
+  ],
+  "Bowling": [
+    "Curling",
+    "Tennis"
+  ],
+  "BoxingPunchingBag": [
+    "Dumbbell",
+    "Hammer"
+  ],
+  "BoxingSpeedBag": [
+    "Handbag/Satchel",
+    "Backpack"
+  ],
+  "BreastStroke": [
+    "Brush",
+    "Cup"
+  ],
+  "BrushingTeeth": [
+    "Toothbrush",
+    "Brush"
+  ],
+  "CleanAndJerk": [
+    "Cleaning Products",
+    "Brush"
+  ],
+  "CliffDiving": [
+    "Skiboard",
+    "Slide"
+  ],
+  "CricketBowling": [
+    "Baseball",
+    "Baseball Bat"
+  ],
+  "CricketShot": [
+    "Baseball Bat",
+    "Golf Ball"
+  ],
+  "CuttingInKitchen": [
+    "Cutting/chopping Board",
+    "Scissors"
+  ],
+  "Diving": [
+    "Dolphin",
+    "Volleyball"
+  ],
+  "Drumming": [
+    "Drum",
+    "Trumpet"
+  ],
+  "Fencing": [
+    "Volleyball",
+    "Curling"
+  ],
+  "FieldHockeyPenalty": [
+    "Hockey Stick",
+    "Soccer"
+  ],
+  "FloorGymnastics": [
+    "Volleyball",
+    "Table Tennis"
+  ],
+  "FrisbeeCatch": [
+    "Frisbee",
+    "Golf Ball"
+  ],
+  "FrontCrawl": [
+    "Ladder",
+    "Slide"
+  ],
+  "GolfSwing": [
+    "Swing",
+    "Golf Club"
+  ],
+  "Haircut": [
+    "Scissors",
+    "Comb"
+  ],
+  "HammerThrow": [
+    "Hammer",
+    "Baseball Bat"
+  ],
+  "Hammering": [
+    "Hammer",
+    "Electric Drill"
+  ],
+  "HandstandPushups": [
+    "Billiards",
+    "Dumbbell"
+  ],
+  "HandstandWalking": [
+    "Treadmill",
+    "Crosswalk Sign"
+  ],
+  "HeadMassage": [
+    "Head Phone",
+    "Showerhead"
+  ],
+  "HighJump": [
+    "High Heels",
+    "Hurdle"
+  ],
+  "HorseRace": [
+    "Horse",
+    "Tie"
+  ],
+  "HorseRiding": [
+    "Horse",
+    "Motorcycle"
+  ],
+  "HulaHoop": [
+    "Kite",
+    "Drum"
+  ],
+  "IceDancing": [
+    "Ice cream",
+    "Skateboard"
+  ],
+  "JavelinThrow": [
+    "Golf Ball",
+    "Volleyball"
+  ],
+  "JugglingBalls": [
+    "Other Balls",
+    "Jug"
+  ],
+  "JumpRope": [
+    "Ladder",
+    "Volleyball"
+  ],
+  "JumpingJack": [
+    "Swing",
+    "Billiards"
+  ],
+  "Kayaking": [
+    "Paddle",
+    "Boat"
+  ],
+  "Knitting": [
+    "Curling",
+    "Pasta"
+  ],
+  "LongJump": [
+    "Hurdle",
+    "Ladder"
+  ],
+  "Lunges": [
+    "Volleyball",
+    "Basketball"
+  ],
+  "MilitaryParade": [
+    "Flag",
+    "Slide"
+  ],
+  "Mixing": [
+    "Blender",
+    "Jug"
+  ],
+  "MoppingFloor": [
+    "Mop",
+    "Carpet"
+  ],
+  "Nunchucks": [
+    "Mushroom",
+    "Duck"
+  ],
+  "ParallelBars": [
+    "Barbell",
+    "Crosswalk Sign"
+  ],
+  "PizzaTossing": [
+    "Pizza",
+    "Meat ball"
+  ],
+  "PlayingCello": [
+    "Cello",
+    "Violin"
+  ],
+  "PlayingDaf": [
+    "Billiards",
+    "Cue"
+  ],
+  "PlayingDhol": [
+    "Billiards",
+    "Table Tennis"
+  ],
+  "PlayingFlute": [
+    "Flute",
+    "Violin"
+  ],
+  "PlayingGuitar": [
+    "Guitar",
+    "Violin"
+  ],
+  "PlayingPiano": [
+    "Piano",
+    "Violin"
+  ],
+  "PlayingSitar": [
+    "Violin",
+    "Table Tennis"
+  ],
+  "PlayingTabla": [
+    "Table Tennis",
+    "Billiards"
+  ],
+  "PlayingViolin": [
+    "Violin",
+    "Piano"
+  ],
+  "PoleVault": [
+    "Ladder",
+    "Stool"
+  ],
+  "PommelHorse": [
+    "Horse",
+    "Donkey"
+  ],
+  "PullUps": [
+    "Spring Rolls",
+    "Pickup Truck"
+  ],
+  "Punch": [
+    "Hammer",
+    "Knife"
+  ],
+  "PushUps": [
+    "Spring Rolls",
+    "Dumbbell"
+  ],
+  "Rafting": [
+    "Sailboat",
+    "Boat"
+  ],
+  "RockClimbingIndoor": [
+    "Ladder",
+    "Curling"
+  ],
+  "RopeClimbing": [
+    "Ladder",
+    "Curling"
+  ],
+  "Rowing": [
+    "Curling",
+    "Boat"
+  ],
+  "SalsaSpin": [
+    "Coconut",
+    "Billiards"
+  ],
+  "ShavingBeard": [
+    "Brush",
+    "Comb"
+  ],
+  "Shotput": [
+    "Gun",
+    "Pot"
+  ],
+  "SkateBoarding": [
+    "Skateboard",
+    "Skiboard"
+  ],
+  "Skiing": [
+    "Skiboard",
+    "Skating and Skiing shoes"
+  ],
+  "Skijet": [
+    "Skiboard",
+    "Airplane"
+  ],
+  "SkyDiving": [
+    "Hot-air balloon",
+    "Kite"
+  ],
+  "SoccerJuggling": [
+    "Soccer",
+    "Jug"
+  ],
+  "SoccerPenalty": [
+    "Soccer",
+    "American Football"
+  ],
+  "StillRings": [
+    "Ring",
+    "Cell Phone"
+  ],
+  "SumoWrestling": [
+    "Volleyball",
+    "Soccer"
+  ],
+  "Surfing": [
+    "Surfboard",
+    "Volleyball"
+  ],
+  "Swing": [
+    "Swing",
+    "Belt"
+  ],
+  "TableTennisShot": [
+    "Table Tennis",
+    "Table Tennis paddle"
+  ],
+  "TaiChi": [
+    "Table Tennis",
+    "Volleyball"
+  ],
+  "TennisSwing": [
+    "Swing",
+    "Tennis"
+  ],
+  "ThrowDiscus": [
+    "Golf Ball",
+    "Curling"
+  ],
+  "TrampolineJumping": [
+    "Volleyball",
+    "Hot-air balloon"
+  ],
+  "Typing": [
+    "Keyboard",
+    "Pen/Pencil"
+  ],
+  "UnevenBars": [
+    "Barbell",
+    "Hurdle"
+  ],
+  "VolleyballSpiking": [
+    "Volleyball",
+    "Billiards"
+  ],
+  "WalkingWithDog": [
+    "Dog",
+    "Stroller"
+  ],
+  "WallPushups": [
+    "Billiards",
+    "Dumbbell"
+  ],
+  "WritingOnBoard": [
+    "Game board",
+    "Board Eraser"
+  ],
+  "YoYo": [
+    "Yak",
+    "Strawberry"
+  ]
+}
