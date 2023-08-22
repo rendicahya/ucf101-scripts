@@ -36,7 +36,7 @@ for csv in pathlib.Path("matrix").iterdir():
 
         for i, row in enumerate(df.itertuples(index=False)):
             action = df.index[i]
-            ids_above = [col for col, val in zip(df.columns, row) if val > thres]
+            ids_above = [i for i, val in enumerate(row) if val > thres]
             names_above = [col for col, val in zip(df.columns, row) if val > thres]
 
             filtered_names.append({action: names_above})
