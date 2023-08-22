@@ -1,0 +1,507 @@
+[
+  {
+    "ApplyEyeMakeup": [
+      355
+    ]
+  },
+  {
+    "ApplyLipstick": [
+      361
+    ]
+  },
+  {
+    "Archery": [
+      147
+    ]
+  },
+  {
+    "BabyCrawling": [
+      92
+    ]
+  },
+  {
+    "BalanceBeam": [
+      57
+    ]
+  },
+  {
+    "BandMarching": [
+      245
+    ]
+  },
+  {
+    "BaseballPitch": [
+      165
+    ]
+  },
+  {
+    "Basketball": [
+      177
+    ]
+  },
+  {
+    "BasketballDunk": [
+      177
+    ]
+  },
+  {
+    "BenchPress": [
+      24
+    ]
+  },
+  {
+    "Biking": [
+      46
+    ]
+  },
+  {
+    "Billiards": [
+      189
+    ]
+  },
+  {
+    "BlowDryHair": [
+      328
+    ]
+  },
+  {
+    "BlowingCandles": [
+      71
+    ]
+  },
+  {
+    "BodyWeightSquats": [
+      231
+    ]
+  },
+  {
+    "Bowling": [
+      26
+    ]
+  },
+  {
+    "BoxingPunchingBag": [
+      204
+    ]
+  },
+  {
+    "BoxingSpeedBag": [
+      204
+    ]
+  },
+  {
+    "BreastStroke": [
+      225
+    ]
+  },
+  {
+    "BrushingTeeth": [
+      226
+    ]
+  },
+  {
+    "CleanAndJerk": [
+      161
+    ]
+  },
+  {
+    "CliffDiving": [
+      228
+    ]
+  },
+  {
+    "CricketBowling": [
+      86
+    ]
+  },
+  {
+    "CricketShot": [
+      247
+    ]
+  },
+  {
+    "CuttingInKitchen": [
+      166
+    ]
+  },
+  {
+    "Diving": [
+      45
+    ]
+  },
+  {
+    "Drumming": [
+      53
+    ]
+  },
+  {
+    "Fencing": [
+      252
+    ]
+  },
+  {
+    "FieldHockeyPenalty": [
+      85
+    ]
+  },
+  {
+    "FloorGymnastics": [
+      60
+    ]
+  },
+  {
+    "FrisbeeCatch": [
+      219
+    ]
+  },
+  {
+    "FrontCrawl": [
+      74
+    ]
+  },
+  {
+    "GolfSwing": [
+      247
+    ]
+  },
+  {
+    "Haircut": [
+      328
+    ]
+  },
+  {
+    "HammerThrow": [
+      286
+    ]
+  },
+  {
+    "Hammering": [
+      286
+    ]
+  },
+  {
+    "HandstandPushups": [
+      145
+    ]
+  },
+  {
+    "HandstandWalking": [
+      1
+    ]
+  },
+  {
+    "HeadMassage": [
+      125
+    ]
+  },
+  {
+    "HighJump": [
+      252
+    ]
+  },
+  {
+    "HorseRace": [
+      78
+    ]
+  },
+  {
+    "HorseRiding": [
+      78
+    ]
+  },
+  {
+    "HulaHoop": [
+      177
+    ]
+  },
+  {
+    "IceDancing": [
+      227
+    ]
+  },
+  {
+    "JavelinThrow": [
+      363
+    ]
+  },
+  {
+    "JugglingBalls": [
+      140
+    ]
+  },
+  {
+    "JumpRope": [
+      252
+    ]
+  },
+  {
+    "JumpingJack": [
+      173
+    ]
+  },
+  {
+    "Kayaking": [
+      86
+    ]
+  },
+  {
+    "Knitting": [
+      169
+    ]
+  },
+  {
+    "LongJump": [
+      252
+    ]
+  },
+  {
+    "Lunges": [
+      263
+    ]
+  },
+  {
+    "MilitaryParade": [
+      27
+    ]
+  },
+  {
+    "Mixing": [
+      352
+    ]
+  },
+  {
+    "MoppingFloor": [
+      335
+    ]
+  },
+  {
+    "Nunchucks": [
+      240
+    ]
+  },
+  {
+    "ParallelBars": [
+      356
+    ]
+  },
+  {
+    "PizzaTossing": [
+      143
+    ]
+  },
+  {
+    "PlayingCello": [
+      229
+    ]
+  },
+  {
+    "PlayingDaf": [
+      334
+    ]
+  },
+  {
+    "PlayingDhol": [
+      59
+    ]
+  },
+  {
+    "PlayingFlute": [
+      255
+    ]
+  },
+  {
+    "PlayingGuitar": [
+      59
+    ]
+  },
+  {
+    "PlayingPiano": [
+      142
+    ]
+  },
+  {
+    "PlayingSitar": [
+      334
+    ]
+  },
+  {
+    "PlayingTabla": [
+      334
+    ]
+  },
+  {
+    "PlayingViolin": [
+      184
+    ]
+  },
+  {
+    "PoleVault": [
+      252
+    ]
+  },
+  {
+    "PommelHorse": [
+      78
+    ]
+  },
+  {
+    "PullUps": [
+      340
+    ]
+  },
+  {
+    "Punch": [
+      286
+    ]
+  },
+  {
+    "PushUps": [
+      64
+    ]
+  },
+  {
+    "Rafting": [
+      21
+    ]
+  },
+  {
+    "RockClimbingIndoor": [
+      100
+    ]
+  },
+  {
+    "RopeClimbing": [
+      173
+    ]
+  },
+  {
+    "Rowing": [
+      86
+    ]
+  },
+  {
+    "SalsaSpin": [
+      266
+    ]
+  },
+  {
+    "ShavingBeard": [
+      226
+    ]
+  },
+  {
+    "Shotput": [
+      64
+    ]
+  },
+  {
+    "SkateBoarding": [
+      145
+    ]
+  },
+  {
+    "Skiing": [
+      148
+    ]
+  },
+  {
+    "Skijet": [
+      119
+    ]
+  },
+  {
+    "SkyDiving": [
+      228
+    ]
+  },
+  {
+    "SoccerJuggling": [
+      118
+    ]
+  },
+  {
+    "SoccerPenalty": [
+      118
+    ]
+  },
+  {
+    "StillRings": [
+      33
+    ]
+  },
+  {
+    "SumoWrestling": [
+      286
+    ]
+  },
+  {
+    "Surfing": [
+      146
+    ]
+  },
+  {
+    "Swing": [
+      212
+    ]
+  },
+  {
+    "TableTennisShot": [
+      364
+    ]
+  },
+  {
+    "TaiChi": [
+      203
+    ]
+  },
+  {
+    "TennisSwing": [
+      210
+    ]
+  },
+  {
+    "ThrowDiscus": [
+      219
+    ]
+  },
+  {
+    "TrampolineJumping": [
+      252
+    ]
+  },
+  {
+    "Typing": [
+      106
+    ]
+  },
+  {
+    "UnevenBars": [
+      24
+    ]
+  },
+  {
+    "VolleyballSpiking": [
+      239
+    ]
+  },
+  {
+    "WalkingWithDog": [
+      92
+    ]
+  },
+  {
+    "WallPushups": [
+      214
+    ]
+  },
+  {
+    "WritingOnBoard": [
+      18
+    ]
+  },
+  {
+    "YoYo": [
+      203
+    ]
+  }
+]
