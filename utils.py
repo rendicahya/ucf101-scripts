@@ -28,10 +28,8 @@ def iterate(path: Path, operation, extension=None, progress_bar=True, single=Fal
 
 def count_files(path: Path, recursive=True, extension=None):
     pattern = "**/*" if recursive else "*"
-    filter = (
-        (lambda f: f.is_file())
-        if extension is None
-        else (lambda f: f.is_file() and f.suffix == extension)
-    )
 
-    return sum(1 for f in path.glob(pattern) if filter(f))
+    if extension is not None:
+        pattern += "." + extension
+
+    return sum(1 for f in path.glob(pattern) if f.is_file())
