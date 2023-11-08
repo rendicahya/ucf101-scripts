@@ -1,52 +1,17 @@
-import pathlib
 import random
+from pathlib import Path
 
-import click
-
-
-@click.command()
-@click.argument(
-    "input-path",
-    nargs=1,
-    required=True,
-    type=click.Path(
-        file_okay=False,
-        dir_okay=True,
-        exists=True,
-        readable=True,
-        path_type=pathlib.Path,
-    ),
-)
-@click.argument("extension", nargs=1, required=True, type=str)
-@click.argument(
-    "label-file",
-    nargs=1,
-    required=True,
-    type=click.Path(
-        file_okay=True,
-        dir_okay=False,
-        exists=True,
-        readable=True,
-        path_type=pathlib.Path,
-    ),
-)
-@click.argument(
-    "output",
-    nargs=1,
-    required=True,
-    type=click.Path(
-        file_okay=True,
-        dir_okay=False,
-        exists=False,
-        writable=True,
-        path_type=pathlib.Path,
-    ),
-    default="list.txt",
-)
-@click.option("--shuffle", is_flag=True)
-@click.option("--absolute", is_flag=True)
-def main(input_path, extension, label_file, output, shuffle, absolute):
+if __name__ == "__main__":
+    dataset_path = Path("/nas.dbms/randy/datasets/ucf101")
+    label_file = Path("split/ucfTrainTestlist/classInd.txt")
+    shuffle = False
+    absolute = True
+    extension = ".avi"
+    output = "ucf101-list.txt"
     indexes = {}
+
+    assert dataset_path.exists()
+    assert label_file.exists()
 
     with open(label_file, "r") as file:
         for line in file:
@@ -56,12 +21,13 @@ def main(input_path, extension, label_file, output, shuffle, absolute):
 
     files = []
 
-    for file in input_path.rglob("*"):
+    for file in dataset_path.rglob("*"):
         if file.is_file() and file.suffix == extension:
-            line = str(file) if absolute else str(file.relative_to(input_path))
+            line = str(file) if absolute else str(file.relative_to(dataset_path))
             label = line.split("/")[5 if absolute else 0]
+            class_index = str(indexes[label])
 
-            files.append(line + " " + str(indexes[label]))
+            files.append(line + " " + class_index)
 
     if shuffle:
         random.shuffle(files)
@@ -69,7 +35,3 @@ def main(input_path, extension, label_file, output, shuffle, absolute):
     with open(output, "w") as writer:
         for file in files:
             writer.write(f"{file}\n")
-
-
-if __name__ == "__main__":
-    main()
