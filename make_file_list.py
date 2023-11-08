@@ -11,7 +11,9 @@ if __name__ == "__main__":
     indexes = {}
 
     assert dataset_path.exists()
+    assert dataset_path.is_dir()
     assert label_file.exists()
+    assert label_file.is_file()
 
     with open(label_file, "r") as file:
         for line in file:
