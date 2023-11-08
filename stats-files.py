@@ -6,6 +6,11 @@ if __name__ == "__main__":
     test_list = Path("split/ucfTrainTestlist/testlist01.txt")
     annotation_path = Path("annotations")
 
+    assert dataset_path.exists() and dataset_path.is_dir()
+    assert train_list.exists() and train_list.is_file()
+    assert test_list.exists() and test_list.is_file()
+    assert annotation_path.exists() and annotation_path.is_dir()
+
     train = [
         line.strip().replace(".", " ").replace("/", " ").split()[1]
         for line in open(train_list).readlines()
