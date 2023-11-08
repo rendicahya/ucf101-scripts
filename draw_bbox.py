@@ -25,7 +25,7 @@ colors = (
 
 
 def operation(action, anno_file):
-    if not anno_file.suffix == ".xgtf":
+    if anno_file.suffix != ".xgtf":
         return
 
     with open(anno_file) as f:
