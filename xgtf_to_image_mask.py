@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from moviepy.editor import VideoFileClip
 from PIL import Image
 
-annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
+annotation_path = Path("annotations")
 input_path = Path("/nas.dbms/randy/datasets/ucf101")
 output_path = Path("/nas.dbms/randy/datasets/ucf101-mask")
 action_only = False
