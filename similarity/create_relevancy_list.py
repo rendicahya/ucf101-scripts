@@ -4,10 +4,12 @@ import pathlib
 import numpy as np
 import pandas as pd
 
-for csv in pathlib.Path("matrix").iterdir():
+dataset_name = "unidet"
+
+for csv in pathlib.Path(f"{dataset_name}-matrix").iterdir():
     df = pd.read_csv(csv, index_col=0, engine="pyarrow").astype(float)
-    names_output_dir = pathlib.Path("relevant-names") / csv.stem
-    ids_output_dir = pathlib.Path("relevant-ids") / csv.stem
+    names_output_dir = pathlib.Path(f"{dataset_name}-relevant-names") / csv.stem
+    ids_output_dir = pathlib.Path(f"{dataset_name}-relevant-ids") / csv.stem
 
     names_output_dir.mkdir(parents=True, exist_ok=True)
     ids_output_dir.mkdir(parents=True, exist_ok=True)
