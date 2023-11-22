@@ -4,10 +4,12 @@ import cv2
 import utils
 from bs4 import BeautifulSoup
 from moviepy.editor import ImageSequenceClip, VideoFileClip
+from python_config import Config
 
-annotation_path = Path("/nas.dbms/randy/projects/ucf101-scripts/annotations")
-input_path = Path("/nas.dbms/randy/datasets/ucf101")
-output_path = Path("/nas.dbms/randy/datasets/ucf101-bbox")
+conf = Config("config.json")
+annotation_path = Path(conf.xgtf.path)
+input_path = Path(conf.ucf101.path)
+output_path = Path(conf.output.video_bbox)
 bbox_thickness = 2
 
 print_frame_number = False
@@ -136,4 +138,4 @@ def operation(action, anno_file):
 
 
 if __name__ == "__main__":
-    utils.iterate(annotation_path, operation, extension=".xgtf", progress_bar=False)
+    utils.iterate(annotation_path, operation, extension=".xgtf")
