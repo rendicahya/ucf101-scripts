@@ -1,13 +1,19 @@
 {
   "ucf101": {
-    "path": "/nas.dbms/randy/datasets/ucf101"
+    "path": "/nas.dbms/randy/datasets/ucf101",
+    "ext": ".avi"
   },
   "xgtf": {
     "path": "xgtf",
-    "json": "xgtf-json",
     "action_only": false
   },
-  "output": {
-    "video_bbox": "/nas.dbms/randy/datasets/ucf101-xgtf-bbox-2"
+  "video_bbox": {
+    "multithread": true,
+    "video_writer": "moviepy",
+    "output": {
+      "path": "/nas.dbms/randy/datasets/ucf101-xgtf-bbox-moviepy",
+      "bbox_thickness": 2,
+      "print_frame_number": false
+    }
   }
 }
