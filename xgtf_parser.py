@@ -12,12 +12,16 @@ def parse(path: Union[Path, str], action_only: bool = False):
         try:
             soup = BeautifulSoup(f, "xml")
         except:
-            print("Error reading:", path)
+            print("Error reading", path)
             return None
 
     all_bbox = {}
+    data = soup.find("data")
 
-    for sourcefile in soup.find("data").find_all("sourcefile"):
+    if data is None:
+        return None
+
+    for sourcefile in data.find_all("sourcefile"):
         for person in sourcefile.find_all("object", {"name": "PERSON"}):
             person_id = int(person["id"])
 
