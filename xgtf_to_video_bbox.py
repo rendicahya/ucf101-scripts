@@ -63,16 +63,11 @@ def draw_bbox(xgtf, video_path, conf):
         yield frame
 
 
-def process_video_frame(frames: list, operation: Callable):
-    for frame in frames:
-        yield operation(frame)
-
-
 def core_job(xgtf, input_video_path, output_video_path, conf, bar):
     bbox_frames = draw_bbox(xgtf, input_video_path, conf)
     fps = video_info(input_video_path)["fps"]
     grayscale_op = lambda f: cv2.cvtColor(f, cv2.COLOR_BGR2RGB)
-    bbox_frames_rgb = process_video_frame(bbox_frames, grayscale_op)
+    bbox_frames_rgb = (grayscale_op(f) for f in bbox_frames)
 
     bar.set_description(xgtf.stem)
     output_video_path.parent.mkdir(parents=True, exist_ok=True)
