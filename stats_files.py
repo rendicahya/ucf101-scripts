@@ -25,6 +25,7 @@ test = [
 ]
 
 train_size, test_size = len(train), len(test)
+xgtf_n_actions = sum(1 for d in xgtf_path.iterdir())
 
 anno_train_count = 0
 anno_test_count = 0
@@ -39,5 +40,6 @@ print("Dataset size:", train_size + test_size)
 print("Train size:", train_size)
 print("Test size:", test_size)
 print("Annotations:", anno_train_count + anno_test_count)
-print("Annotations in train:", anno_train_count)
-print("Annotations in test:", anno_test_count)
+print("Annotations in train split:", anno_train_count)
+print("Annotations in test split:", anno_test_count)
+print("No. of annotated actions class:", xgtf_n_actions)
