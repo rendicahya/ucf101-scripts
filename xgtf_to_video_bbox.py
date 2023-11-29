@@ -2,7 +2,6 @@ import multiprocessing
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from pathlib import Path
-from typing import Callable
 
 import cv2
 import xgtf_parser
