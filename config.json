@@ -1,10 +1,13 @@
 {
   "ucf101": {
-    "path": "/nas.dbms/randy/datasets/ucf101",
+    "path": "/home/randy/Datasets/ucf101",
     "ext": ".avi"
   },
   "xgtf": {
-    "path": "xgtf",
+    "path": "xgtf"
+  },
+  "mask": {
+    "path": "/home/randy/Datasets/ucf101-xgtf-mask",
     "action_only": false
   },
   "video_bbox": {
