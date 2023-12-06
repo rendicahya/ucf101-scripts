@@ -1,12 +1,12 @@
 from pathlib import Path
 
-import numpy as np
-from python_config import Config
-from assertpy.assertpy import assert_that
-import xgtf_parser
-from python_video import video_info
-from python_file import count_files
 import cv2
+import numpy as np
+import xgtf_parser
+from assertpy.assertpy import assert_that
+from python_config import Config
+from python_file import count_files
+from python_video import video_info
 from tqdm import tqdm
 
 
@@ -14,8 +14,11 @@ def main():
     conf = Config("config.json")
     xgtf_dir = Path(conf.xgtf.path)
     ucf101_dir = Path(conf.ucf101.path)
-    output_dir = Path(conf.mask.path)
+    ucf101_ext = conf.ucf101.ext
+    mask_ext = conf.mask.ext
+    output_root = Path(conf.mask.path)
     bar = tqdm(total=count_files(xgtf_dir))
+    n_digits = conf.mask.n_digits
 
     assert_that(xgtf_dir).is_directory().is_readable()
     assert_that(ucf101_dir).is_directory().is_readable()
@@ -32,10 +35,10 @@ def main():
             if not people_bbox:
                 continue
 
-            video_path = ucf101_dir / action.name / (xgtf.with_suffix(".avi").name)
-            output_path = output_dir / action.name / xgtf.stem
+            video_path = ucf101_dir / action.name / (xgtf.with_suffix(ucf101_ext).name)
+            output_dir = output_root / action.name / xgtf.stem
 
-            output_path.mkdir(parents=True, exist_ok=True)
+            output_dir.mkdir(parents=True, exist_ok=True)
 
             info = video_info(video_path)
             n_frames = info["n_frames"]
@@ -43,6 +46,7 @@ def main():
 
             for i in range(n_frames):
                 mask = np.zeros((height, width), dtype=np.uint8)
+                output_file = output_dir / (f"%0{n_digits}d{mask_ext}" % i)
 
                 for person_id, person_bbox in people_bbox.items():
                     if i not in person_bbox:
@@ -53,7 +57,7 @@ def main():
                     y2 = y1 + h
                     mask[y1:y2, x1:x2] = 255
 
-                cv2.imwrite(str(output_path / f"{i:04}.png"), mask)
+                cv2.imwrite(str(output_file), mask)
 
             bar.update(1)
 

@@ -8,7 +8,9 @@
   },
   "mask": {
     "path": "/home/randy/Datasets/ucf101-xgtf-mask",
-    "action_only": false
+    "action_only": false,
+    "n_digits": 5,
+    "ext": ".png"
   },
   "video_bbox": {
     "multithread": true,
