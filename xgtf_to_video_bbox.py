@@ -84,11 +84,12 @@ def core_job(xgtf, input_video_path, output_video_path, conf, bar):
 def main():
     conf = Config("config.json")
     xgtf_path = Path(conf.xgtf.path)
-    input_path = Path(conf.ucf101.path)
-    output_path = Path(conf.video_bbox.output.path)
+    ucf101_root = Path(conf.ucf101.path)
+    output_root = Path(conf.video_bbox.output.path)
+    output_ext = conf.video_bbox.ext
 
     assert_that(xgtf_path).is_directory().is_readable()
-    assert_that(input_path).is_directory().is_readable()
+    assert_that(ucf101_root).is_directory().is_readable()
 
     n_files = count_files(xgtf_path)
     bar = tqdm(total=n_files)
@@ -106,11 +107,11 @@ def main():
                     continue
 
                 input_video_path = (
-                    input_path / action.name / (xgtf.with_suffix(conf.ucf101.ext).name)
+                    ucf101_root / action.name / (xgtf.with_suffix(conf.ucf101.ext).name)
                 )
 
                 output_video_path = (
-                    output_path / action.name / (xgtf.with_suffix(".mp4").name)
+                    output_root / action.name / (xgtf.with_suffix(output_ext).name)
                 )
 
                 if conf.video_bbox.multithread:

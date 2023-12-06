@@ -15,6 +15,7 @@
   "video_bbox": {
     "multithread": true,
     "video_writer": "moviepy",
+    "ext": ".mp4",
     "output": {
       "path": "/nas.dbms/randy/datasets/ucf101-xgtf-bbox-moviepy",
       "bbox_thickness": 2,
