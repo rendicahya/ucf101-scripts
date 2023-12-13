@@ -1,13 +1,16 @@
 {
   "ucf101": {
-    "path": "/home/randy/Datasets/ucf101",
+    "path": "/nas.dbms/randy/datasets/ucf101",
     "ext": ".avi"
+  },
+  "ucf24": {
+    "path": "/nas.dbms/randy/datasets/ucf24"
   },
   "xgtf": {
     "path": "xgtf"
   },
   "mask": {
-    "path": "/home/randy/Datasets/ucf101-xgtf-mask",
+    "path": "/nas.dbms/randy/datasets/ucf101-xgtf-mask",
     "action_only": false,
     "n_digits": 5,
     "ext": ".png"
