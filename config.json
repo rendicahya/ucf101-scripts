@@ -1,13 +1,35 @@
 {
   "ucf101": {
     "path": "/nas.dbms/randy/datasets/ucf101",
-    "ext": ".avi"
+    "ext": ".avi",
+    "classindex": "ucfTrainTestlist/classInd.txt"
   },
   "ucf24": {
-    "path": "/nas.dbms/randy/datasets/ucf24"
+    "path": "/nas.dbms/randy/datasets/ucf24",
+    "classindex": "ucf24-classInd.txt",
+    "ext": ".avi",
+    "split": {
+      "train": 0.8,
+      "val": 0.2,
+      "test": 0.2
+    }
   },
   "xgtf": {
     "path": "xgtf"
+  },
+  "generate": {
+    "class_index": {
+      "input_dir": "/nas.dbms/randy/datasets/ucf24",
+      "output": "ucf24-classInd.txt"
+    },
+    "file_list": {
+      "input_dir": "/nas.dbms/randy/datasets/ucf24",
+      "class_index": "ucf24-classInd.txt",
+      "output": "ucf24-filelist.txt",
+      "ext": ".avi",
+      "shuffle": false,
+      "absolute": false
+    }
   },
   "mask": {
     "path": "/nas.dbms/randy/datasets/ucf101-xgtf-mask",
