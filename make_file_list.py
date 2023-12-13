@@ -1,39 +1,37 @@
 import random
 from pathlib import Path
 
-if __name__ == "__main__":
-    dataset_path = Path("/nas.dbms/randy/datasets/ucf101")
-    label_file = Path("split/ucfTrainTestlist/classInd.txt")
-    shuffle = False
-    absolute = True
-    extension = ".avi"
-    output = "ucf101-list.txt"
-    indexes = {}
+from assertpy.assertpy import assert_that
+from python_config import Config
 
-    assert dataset_path.exists()
-    assert dataset_path.is_dir()
-    assert label_file.exists()
-    assert label_file.is_file()
+conf = Config("config.json")
+dataset_path = Path(conf.generate.file_list.input_dir)
+class_index = Path(conf.generate.file_list.class_index)
+absolute = conf.generate.file_list.absolute
+extension = conf.generate.file_list.ext
+indexes = {}
 
-    with open(label_file, "r") as file:
-        for line in file:
-            line = line.strip().split()
-            index, name = line
-            indexes[name] = int(index) - 1
+assert_that(dataset_path).is_directory().is_readable()
+assert_that(class_index).is_file().is_readable()
 
-    files = []
+with open(class_index, "r") as file:
+    for line in file:
+        index, name = line.strip().split()
+        indexes[name] = int(index)
 
-    for file in dataset_path.rglob("*"):
-        if file.is_file() and file.suffix == extension:
-            line = str(file) if absolute else str(file.relative_to(dataset_path))
-            label = line.split("/")[5 if absolute else 0]
-            class_index = str(indexes[label])
+files = []
 
-            files.append(line + " " + class_index)
+for file in dataset_path.rglob("*"):
+    if file.is_file() and file.suffix == extension:
+        line = str(file) if absolute else str(file.relative_to(dataset_path))
+        label = line.split("/")[5 if absolute else 0]
+        class_index = str(indexes[label])
 
-    if shuffle:
-        random.shuffle(files)
+        files.append(line + " " + class_index)
 
-    with open(output, "w") as writer:
-        for file in files:
-            writer.write(f"{file}\n")
+if conf.generate.file_list.shuffle:
+    random.shuffle(files)
+
+with open(conf.generate.file_list.output, "w") as writer:
+    for file in files:
+        writer.write(f"{file}\n")
